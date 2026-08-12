@@ -15,5 +15,28 @@
         <input type="reset" value="취소" />
       </filedset>
     </form>
+    <script>
+      document.querySelector("form").addEventListener("submit", async (e) => {
+        e.defaultPrevent(); //기본 이벤트 차단
+        const inpusts = document.querySelectorAll("form input");
+        const response = await fetch(
+          "http://teacherdev09.kro.kr:10002/springboot/auth/login.do",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: inputs[0].value,
+              password: inputs[1].value,
+            }),
+          },
+        );
+        if (!response.ok) throw new Error("에러");
+        const data = await response.json();
+        if (data.token) sessionStorage.setItem(JSON.stringify(data));
+        else throw new Error("로그인 실패");
+      });
+    </script>
   </body>
 </html>
